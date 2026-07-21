@@ -25,5 +25,8 @@ namespace HelpDeskAPI.Models
         public string PasswordHash {get; set;} = string.Empty;
         public UserRole Role {get; set;} = UserRole.Customer;
         public DateTime CreatedAt {get; set;} = DateTime.UtcNow;
+
+        public ICollection<Ticket> CreatedTickets { get; set; } = new List<Ticket>();
+        public ICollection<Ticket> AssignedTickets { get; set; } = new List<Ticket>();
     }
 }

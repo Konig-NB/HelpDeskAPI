@@ -51,11 +51,13 @@ try
     //--Repositories-------------------------------------------------------
     builder.Services.AddScoped<IUserRepository, UserRepository>();
     builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+    builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 
     //--Services-----------------------------------------------------------
     builder.Services.AddScoped<IAuthService, AuthService>();
     builder.Services.AddScoped<IUserService, UserService>();
-    builder.Services.AddScoped<ICategoryService, CategoryService>();;
+    builder.Services.AddScoped<ICategoryService, CategoryService>();
+    builder.Services.AddScoped<ITicketService, TicketService>();
 
     // --JWT Authentication-----------------------------------------------------------
     var jwtSettings = builder.Configuration.GetSection("JwtSettings");
