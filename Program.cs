@@ -150,7 +150,7 @@ try
                     QueueLimit = 0
                 }));
 
-        options.AddPolicy("tickect", context =>
+        options.AddPolicy("ticket", context =>
             RateLimitPartition.GetFixedWindowLimiter(
                 partitionKey: context.User.Identity?.Name ?? context.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
                 factory: _ => new FixedWindowRateLimiterOptions
