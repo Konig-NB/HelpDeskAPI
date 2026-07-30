@@ -3,6 +3,7 @@ using HelpDeskAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace HelpDeskAPI.Controllers
 {
@@ -19,12 +20,15 @@ namespace HelpDeskAPI.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAll(
             [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10)
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? status = null,
+            [FromQuery] string? priority = null,
+            [FromQuery] string? category = null)
         {
             if (page < 1 || pageSize < 1)
                 return BadRequest(new { message = "Page and pageSize must be greater than 0." });
 
-            var result = await _service.GetAllAsync(page, pageSize);
+            var result = await _service.GetAllAsync(page, pageSize, status, priority, category);
             return Ok(result);
         }
 
@@ -39,6 +43,7 @@ namespace HelpDeskAPI.Controllers
             return Ok(ticket);
         }
 
+        [EnableRateLimiting("ticket")]
         [HttpPost]
         [Authorize(Roles = "Admin,Customer")]
         public async Task<IActionResult> Create([FromBody] CreateTicketDTO dto)
@@ -48,7 +53,7 @@ namespace HelpDeskAPI.Controllers
         }
 
         [HttpPatch("{id:int}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Agent")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateTicketDTO dto)
         {
             var updated = await _service.UpdateAsync(id, dto);
@@ -79,7 +84,7 @@ namespace HelpDeskAPI.Controllers
                 return Ok(await _service.GetTicketsForCustomerAsync(userId));
 
             if (role == "Admin")
-                return Ok(await _service.GetAllAsync(1, 100));
+                return Ok(await _service.GetAllAsync(1, 100, null, null, null));
 
             return Forbid();
         }

@@ -52,12 +52,14 @@ try
     builder.Services.AddScoped<IUserRepository, UserRepository>();
     builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
     builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+    builder.Services.AddScoped<ITicketReplyRepository, TicketReplyRepository>();
 
     //--Services-----------------------------------------------------------
     builder.Services.AddScoped<IAuthService, AuthService>();
     builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddScoped<ICategoryService, CategoryService>();
     builder.Services.AddScoped<ITicketService, TicketService>();
+    builder.Services.AddScoped<ITicketReplyService, TicketReplyService>();
 
     // --JWT Authentication-----------------------------------------------------------
     var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -138,7 +140,6 @@ try
     //--Rate Limiting-----------------------------------------------------------
     builder.Services.AddRateLimiter(options =>
     {
-        // Global limiter applies to every request that isn't covered by a more specific policy
         options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
             RateLimitPartition.GetFixedWindowLimiter(
                 partitionKey: context.User.Identity?.Name ?? context.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
@@ -149,7 +150,6 @@ try
                     QueueLimit = 0
                 }));
 
-        // Stricter policy specifically for tickect transaction endpoints
         options.AddPolicy("tickect", context =>
             RateLimitPartition.GetFixedWindowLimiter(
                 partitionKey: context.User.Identity?.Name ?? context.Connection.RemoteIpAddress?.ToString() ?? "anonymous",

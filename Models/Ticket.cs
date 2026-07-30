@@ -44,5 +44,7 @@ namespace HelpDeskAPI.Models
         [Required]
         public DateTime CreatedAt {get; set;}
         public DateTime? UpdatedAt {get; set;}
+
+        public ICollection<TicketReply> Replies { get; set; } = new List<TicketReply>();
     }
 }

@@ -28,5 +28,6 @@ namespace HelpDeskAPI.Models
 
         public ICollection<Ticket> CreatedTickets { get; set; } = new List<Ticket>();
         public ICollection<Ticket> AssignedTickets { get; set; } = new List<Ticket>();
+        public ICollection<TicketReply> Replies { get; set; } = new List<TicketReply>();
     }
 }

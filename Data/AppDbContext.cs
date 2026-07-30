@@ -10,6 +10,7 @@ namespace HelpDeskAPI.Data
         public DbSet<User> Users => Set<User>();
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<Ticket> Tickets => Set<Ticket>();
+        public DbSet<TicketReply> TicketReplies => Set<TicketReply>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -45,6 +46,19 @@ namespace HelpDeskAPI.Data
                 .HasForeignKey(t => t.AssignedToId)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            // TicketReply -> Ticket (many-to-one)
+            modelBuilder.Entity<TicketReply>()
+                .HasOne(tr => tr.Ticket)
+                .WithMany(t => t.Replies)
+                .HasForeignKey(tr => tr.TicketId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // TicketReply -> User (many-to-one)
+            modelBuilder.Entity<TicketReply>()
+                .HasOne(tr => tr.User)
+                .WithMany(u => u.Replies)
+                .HasForeignKey(tr => tr.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
