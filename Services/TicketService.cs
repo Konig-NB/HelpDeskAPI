@@ -11,10 +11,10 @@ namespace HelpDeskAPI.Services
         private readonly ITicketRepository _repo;
         public TicketService(ITicketRepository repo) => _repo = repo;
 
-        public async Task<PagedResult<TicketDTO>> GetAllAsync(int page, int pageSize)
+        public async Task<PagedResult<TicketDTO>> GetAllAsync(int page, int pageSize, string? status, string? priority, string? category)
         {
-            var tickets = await _repo.GetAllTicketsAsync(page, pageSize);
-            var totalCount = await _repo.GetTotalCountAsync();
+            var tickets = await _repo.GetAllTicketsAsync(page, pageSize, status, priority, category);
+            var totalCount = await _repo.GetTotalCountAsync(status, priority, category);
 
             return new PagedResult<TicketDTO>
             {
